@@ -1,10 +1,13 @@
-var express = require("express");
-var BasicDAO = require("./classes/BasicDAO");
-var PokemonDAO = require("./classes/PokemonDAO");
+// external imports
 var ejs = require('ejs'),
-	engine = require('ejs-locals');
+	engine = require('ejs-locals'),
+	express = require("express");
+// internal imports
+var BasicController = require("./controllers/BasicController"),
+	PokemonController = require("./controllers/PokemonController");
 
 var app = express();
+var databaseName = "pokemondb";
 
 app.configure(function() {
 	app.engine('ejs', engine);
@@ -15,11 +18,13 @@ app.configure(function() {
 	app.use(express.urlencoded());
 });
 
-// Initialize home view
+// TODO move db initialization here and pass db object to controllers
+
+// initialize home view
 require("./controllers/index.js")(app);
 
-// TODO initialze DAOs
-var pokemonDAO = new PokemonDAO(app, "pokemon");
+// TODO initialze controllers
+var PokemonController = new PokemonController(app, "pokemon");
 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {

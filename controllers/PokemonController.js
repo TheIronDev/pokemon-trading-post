@@ -1,16 +1,16 @@
-var BasicDAO = require("./BasicDAO");
+var BasicController = require("./BasicController");
 
 var that;
 
 function PokemonDAO(app, collectionName) {
 	that = this;
 
-	BasicDAO.call(this, app, collectionName);
+	BasicController.call(this, app, collectionName);
 
 	// TODO set up routing for Pokemon related REST endpoints
 }
 
-PokemonDAO.prototype = Object.create(BasicDAO.prototype);
+PokemonDAO.prototype = Object.create(BasicController.prototype);
 PokemonDAO.prototype.constructor = PokemonDAO;
 
 PokemonDAO.prototype._populateCollection = function() {
