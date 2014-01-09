@@ -1,5 +1,8 @@
 var ejs = require("ejs"),
 	engine = require("ejs-locals"),
+	fs = require("fs"),
+	http = require("http"),
+	https = require("https"),
 	express = require("express"),
 	mongoose = require("mongoose");
 
@@ -17,9 +20,12 @@ mongoose.connection.once("open", function callback () {
 	console.log("Connected to " + uri);
 });
 
-// TODO is the app initialization in the right place?
+// TODO should the app initialization occur before Mongoose?
 app.configure(function() {
 	app.engine("ejs", engine);
+	// node can't run on standard http and https ports unless running as root
+	app.set("port", process.env.PORT || 8080);
+	app.set("sslport", process.env.SSLPORT || 8081);
 	app.set("view engine", "ejs");
 	app.set("views", __dirname + "/views");
 	app.use(express.logger("dev"));
@@ -32,8 +38,19 @@ require("./controllers/index.js")(app);
 // initialize controllers
 require("./controllers/pokemon.js")(app);
 
-var port = process.env.PORT || 8080;
-app.listen(port, function() {
-	console.log("Listening on port " + port + "...");
-	console.log("http://localhost:" + port);
+// set up a server
+http.createServer(app).listen(app.get("port"), function() {
+	console.log("Listening on port " + app.get("port") + "...");
+	console.log("http://localhost:" + app.get("port"));
+});
+
+// set up a ssl-enabled server
+var options = {
+	key: fs.readFileSync("./ssl/key.pem"),
+	cert: fs.readFileSync("./ssl/cert.pem")
+};
+
+https.createServer(options, app).listen(app.get("sslport"), function() {
+	console.log("Listening on ssl-enabled port " + app.get("sslport") + "...");
+	console.log("https://localhost:" + app.get("sslport"));
 });
