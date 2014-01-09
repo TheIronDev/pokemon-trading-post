@@ -6,9 +6,11 @@ var Pokemon = require("../models/pokemon.js");
  
 post = function(req, res) {
 	new Pokemon({
+		abilities: req.body.abilities,
+		color: req.body.color,
 		name: req.body.name,
-		dexNumber: req.body.dexNumber,
-		color: req.body.color
+		nationalDex: req.body.nationalDex,
+		types: req.body.types
 	}).save();
 	res.send("Saved pokemon.");
 }
