@@ -1,17 +1,18 @@
 pokemon-trading-post
 ====================
+Node.js application for trading Pokemon.  
 
 Setup
 =====
 ## Pull in dependencies
-sudo apt-get install node
-sudo apt-get install npm
-sudo apt-get install mongodb-10gen
+sudo apt-get install node  
+sudo apt-get install npm  
+sudo apt-get install mongodb-10gen  
 
 ## Pull in npm dependencies
-sudo npm install
-sudo npm install -g nodemon
+sudo npm install  
+sudo npm install -g nodemon  
 
 ## Start the server
-node server.js
-nodemon server.js
+node server.js  
+nodemon server.js  

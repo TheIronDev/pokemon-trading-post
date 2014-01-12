@@ -2,7 +2,9 @@
 	User model.
 	Should be used with the following passport strategies:
 	FacebookStrategy, GoogleStrategy, and TwitterStrategy
-	(and any other strategies that use OpenID or OAuth).
+	(and any other strategies that use OpenID or OAuth),
+	or LocalStrategy (if the user does not want to use OpenID or OAuth).
+	A User will most likely not have both an externalId and a password.
 */
 
 var mongoose = require("mongoose"),
@@ -14,6 +16,7 @@ var schema = new Schema({
 	// could be OpenID or OAuth
 	externalId: Number,
 	username: String,
+	password: String
 });
 
 module.exports = mongoose.model("User", schema);
