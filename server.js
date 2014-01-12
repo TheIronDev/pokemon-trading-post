@@ -4,7 +4,9 @@ var ejs = require("ejs"),
 	http = require("http"),
 	https = require("https"),
 	express = require("express"),
-	mongoose = require("mongoose");
+	mongoose = require("mongoose"),
+	passport = require("passport"),
+	LocalStrategy = require('passport-local').Strategy;
 
 var app = express();
 
@@ -33,6 +35,8 @@ app.configure(function() {
 	app.use(express.urlencoded());
 });
 
+// initialize passport authentication middleware
+require("./middleware/passportImpl.js")(app);
 // initialize home view
 require("./controllers/index.js")(app);
 // initialize controllers
