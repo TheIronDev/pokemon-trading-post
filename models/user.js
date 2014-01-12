@@ -16,7 +16,8 @@ var schema = new Schema({
 	// could be OpenID or OAuth
 	externalId: Number,
 	username: String,
-	password: String
+	password: String,
+	email: String
 });
 
 module.exports = mongoose.model("User", schema);

@@ -5,8 +5,7 @@ var ejs = require("ejs"),
 	https = require("https"),
 	express = require("express"),
 	mongoose = require("mongoose"),
-	passport = require("passport"),
-	LocalStrategy = require('passport-local').Strategy;
+	passport = require("passport");
 
 var app = express();
 
@@ -33,13 +32,18 @@ app.configure(function() {
 	app.use(express.logger("dev"));
 	app.use(express.json());
 	app.use(express.urlencoded());
+	app.use(express.static("public"));
+	app.use(express.cookieParser());
+	app.use(express.bodyParser());
+	app.use(express.session({ secret: "keyboard caterpie" }));
+	app.use(passport.initialize());
+	app.use(passport.session());
 });
 
-// initialize passport authentication middleware
-require("./middleware/passportImpl.js")(app);
 // initialize home view
 require("./controllers/index.js")(app);
 // initialize controllers
+require("./controllers/authentication.js")(app, passport);
 require("./controllers/pokemon.js")(app);
 
 // set up a server
