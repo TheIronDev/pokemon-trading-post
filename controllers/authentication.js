@@ -7,33 +7,37 @@
 var LocalStrategy = require("passport-local").Strategy,
 	User = require("../models/user.js");
 
-injectUser = function(req, res, next){
-	// inject a dummy user for now
-	req.body = {
-		username: "John Doe",
-		email: "jdoe@gmail.com",
-		password: "password"
-	};
-	next();
-};
+ensureAuthenticated = function(req, res, next) {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+
+	res.redirect("/");
+}
+
+// TODO move this function to a user controller?
+find = function(req, res) {
+	res.render("profile", {
+		username: JSON.stringify(req.user.username),
+		email: JSON.stringify(req.user.email)
+	});
+}
 
 login = function(req, res) {
-	res.send("Logged in as user: " + JSON.stringify(req.user.username));
+	res.render("login", {
+		message: req.flash("loginMessage")
+	});
+}
+
+logout = function(req, res) {
+	req.logout();
+	res.redirect("/");
 }
 
 register = function(req, res) {
-	new User({
-		username: req.body.username,
-		// TODO don't send password as plaintext
-		password: req.body.password,
-		email: req.body.email
-	}).save();
-	res.send("Registered user.");
-}
-
-// TODO remove this function; used to test user injection
-find = function(req, res) {
-	res.send(req.body);
+	res.render("register", {
+		message: req.flash("registerMessage")
+	});
 }
 
 module.exports = function(app, passport) {
@@ -47,33 +51,69 @@ module.exports = function(app, passport) {
 		});
 	});
 
-	passport.use(new LocalStrategy(
-		function(username, password, done) {
+	passport.use("local-register", new LocalStrategy({
+			passReqToCallback: true
+		},
+		function(req, username, password, done) {
 			User.findOne({ username: username }, function (err, user) {
 				if (err) {
 					return done(err);
 				}
+
+				if (user) {
+					return done(null, false, req.flash("registerMessage", "Username already taken."));
+				}
+
+				var newUser = new User({
+					username: req.body.username,
+					// TODO don"t send password as plaintext
+					password: req.body.password,
+					email: req.body.email
+				});
+				// operate asynchronously, otherwise you might not redirect
+				newUser.save();
+
+				return done(null, newUser);
+			});
+		}
+	));
+
+	passport.use("local-login", new LocalStrategy({
+			passReqToCallback: true
+		},
+		function(req, username, password, done) {
+			req.logout();
+			User.findOne({ username: username }, function (err, user) {
+				if (err) {
+					return done(err);
+				}
+
 				if (!user) {
-					// TODO setup failure flash
-					return done(null, false, { message: "Incorrect username." });
+					return done(null, false, req.flash("loginMessage", "Incorrect username."));
 				}
-				// TODO validate password
-				/*
+
 				if (!user.validPassword(password)) {
-					return done(null, false, { message: "Incorrect password." });
+					return done(null, false, req.flash("loginMessage", "Incorrect password."));
 				}
-				*/
 
 				return done(null, user);
 			});
 		}
 	));
 
-	// TODO remove user injection
-	app.get("*", injectUser);
-	app.post("*", injectUser);
-	// TODO move this to user controller
-	app.get("/user", find);
-	app.post("/login", passport.authenticate("local"), login);
-	app.post("/register", register);
+	// TODO move this to user controller?
+	app.get("/profile", ensureAuthenticated, find);
+	app.get("/login", login);
+	app.post("/login", passport.authenticate("local-login", {
+		successRedirect: "/profile",
+		failureRedirect: "/login",
+		failureFlash: true
+	}));
+	app.get("/logout", logout);
+	app.get("/register", register);
+	app.post("/register", passport.authenticate("local-register", {
+		successRedirect: "/profile",
+		failureRedirect: "/register",
+		failureFlash: true
+	}));
 };

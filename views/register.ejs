@@ -1,0 +1,22 @@
+<% layout('layout') %>
+<h1>Register</h1>
+<% if (message.length > 0) { %>
+	<div><%= message %></div>
+<% } %>
+<form method="post" action="/register">
+	<p>
+		<label>Email:</label>
+		<input type="text" name="email">
+	</p>
+	<p>
+		<label>Username:</label>
+		<input type="text" name="username">
+	</p>
+	<p>
+		<label>Password:</label>
+		<input type="text" name="password">
+	</p>
+	<p>
+		<input type="submit" value="Register">
+	</p>
+</form>

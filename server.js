@@ -1,5 +1,6 @@
 var ejs = require("ejs"),
 	engine = require("ejs-locals"),
+	flash = require("connect-flash"),
 	fs = require("fs"),
 	http = require("http"),
 	https = require("https"),
@@ -36,6 +37,7 @@ app.configure(function() {
 	app.use(express.cookieParser());
 	app.use(express.bodyParser());
 	app.use(express.session({ secret: "keyboard caterpie" }));
+	app.use(flash());
 	app.use(passport.initialize());
 	app.use(passport.session());
 });

@@ -20,4 +20,9 @@ var schema = new Schema({
 	email: String
 });
 
+schema.methods.validPassword = function(password) {
+	// TODO encrypt passwords
+	return this.password == password;
+}
+
 module.exports = mongoose.model("User", schema);

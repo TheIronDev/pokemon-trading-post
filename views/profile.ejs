@@ -1,0 +1,9 @@
+<% layout('layout') %>
+<% if (username != null) { %>
+	<h1>Logged in as: <%= username %></h1>
+<% } else { %>
+	<h1>Huh?</h1>
+<% } %>
+<% if (email != null) { %>
+	<div>Email: <%= email %></div>
+<% } %>
