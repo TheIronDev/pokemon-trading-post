@@ -7,7 +7,7 @@
 var LocalStrategy = require("passport-local").Strategy,
 	User = require("../models/user.js");
 
-injectUser = function(req, res, next){
+var injectUser = function(req, res, next){
 	// inject a dummy user for now
 	req.body = {
 		username: "John Doe",
@@ -17,11 +17,11 @@ injectUser = function(req, res, next){
 	next();
 };
 
-login = function(req, res) {
+var login = function(req, res) {
 	res.send("Logged in as user: " + JSON.stringify(req.user.username));
-}
+};
 
-register = function(req, res) {
+var register = function(req, res) {
 	new User({
 		username: req.body.username,
 		// TODO don't send password as plaintext
@@ -29,12 +29,12 @@ register = function(req, res) {
 		email: req.body.email
 	}).save();
 	res.send("Registered user.");
-}
+};
 
 // TODO remove this function; used to test user injection
-find = function(req, res) {
+var find = function(req, res) {
 	res.send(req.body);
-}
+};
 
 module.exports = function(app, passport) {
 	passport.serializeUser(function(user, done) {
