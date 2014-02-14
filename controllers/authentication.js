@@ -7,7 +7,7 @@
 var LocalStrategy = require("passport-local").Strategy,
 	User = require("../models/user.js");
 
-ensureAuthenticated = function(req, res, next) {
+var ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
@@ -16,25 +16,25 @@ ensureAuthenticated = function(req, res, next) {
 }
 
 // TODO move this function to a user controller?
-find = function(req, res) {
+var find = function(req, res) {
 	res.render("profile", {
 		username: JSON.stringify(req.user.username),
 		email: JSON.stringify(req.user.email)
 	});
 }
 
-login = function(req, res) {
+var login = function(req, res) {
 	res.render("login", {
 		message: req.flash("loginMessage")
 	});
 }
 
-logout = function(req, res) {
+var logout = function(req, res) {
 	req.logout();
 	res.redirect("/");
 }
 
-register = function(req, res) {
+var register = function(req, res) {
 	res.render("register", {
 		message: req.flash("registerMessage")
 	});

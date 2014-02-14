@@ -4,7 +4,7 @@
 
 var Pokemon = require("../models/pokemon.js");
  
-post = function(req, res) {
+var post = function(req, res) {
 	new Pokemon({
 		abilities: req.body.abilities,
 		color: req.body.color,
@@ -13,13 +13,13 @@ post = function(req, res) {
 		types: req.body.types
 	}).save();
 	res.send("Saved pokemon.");
-}
+};
  
-find = function(req, res) {
+var find = function(req, res) {
 	Pokemon.find(function(err, pokemon) {
 		res.send(pokemon);
 	});
-}
+};
 
 module.exports = function(app) {
 	app.post("/pokemon", post);
